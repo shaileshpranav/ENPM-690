@@ -1,6 +1,6 @@
 import numpy as np
 import math
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import time 
@@ -80,15 +80,12 @@ class DiscreteCMAC(CMAC):
             prev_err = error
 
             for i in range(len(self.train_x)):
-                # Get index for the beginning of generalization factor window
                 weight_index = self.association_map[self.train_x[i]]
 
-                # Output is the sum of the weights within the generalization factor window
                 output = np.sum(self.weights[weight_index : weight_index + self.generalization_factor])
                 error = self.train_y[i] - output
                 correction = (learning_rate * error) / self.generalization_factor
                 
-                # Recalculate the weight vector values using the correction coeff
                 self.weights[weight_index : weight_index + self.generalization_factor] = \
                     [(self.weights[idx] + correction) \
                     for idx in range(weight_index, (weight_index + self.generalization_factor))]
@@ -101,11 +98,107 @@ class DiscreteCMAC(CMAC):
                 val_accuracy=0
 
             if np.abs(prev_err - error) < 0.000001:
-                converged = False
+                converged = True
                         
             current_epoch = current_epoch + 1
         print(f'Discrete CMAC: \n  Generalization Factor: {self.generalization_factor} \
         \n  Epoch: {current_epoch} \n  Accuracy: {val_accuracy * 100}%')
+
+
+
+class ContinuousCMAC(CMAC):
+    def __init__(self, x, y, generalization, num_weights,test_size):
+        CMAC.__init__(self, x, y, generalization, num_weights,test_size)
+        self.AssociationMap()
+
+    def AssociationMap(self):     
+        num_association_vectors = self.num_weights - self.generalization_factor
+
+        for i in range(len(self.x)):
+            if x[i] < self.min_input:
+                association_vec_idx = 1
+            elif x[i] > self.max_input:
+                association_vec_idx = num_association_vectors - 1
+            else:
+                proportion_idx = (num_association_vectors - 2) * ((self.x[i] - self.min_input) / (self.max_input - self.min_input)) + 1
+                association_vec_idx = proportion_idx
+
+            low_index = int(math.floor(association_vec_idx))
+            high_index = int(math.ceil(association_vec_idx))
+            
+            if low_index != high_index:
+                self.association_map[x[i]] = (low_index, high_index)
+            else:
+                self.association_map[x[i]] = (low_index, 0)
+
+    def Predict(self, x):
+        self.predicted = []
+        inputs = np.linspace(self.min_input, self.max_input, self.num_weights + 1 - self.generalization_factor)
+        
+        if not len(self.association_map)>0:
+            self.AssociationMap()
+
+        for i in range(len(x)):
+            low_index = self.association_map[x[i]][0]
+            high_index = self.association_map[x[i]][1]
+
+            l_shared = np.abs(inputs[low_index] - x[i])
+            r_shared = np.abs(inputs[high_index] - x[i])
+
+            l_ratio = r_shared / (l_shared + r_shared)
+            r_ratio = l_shared / (l_shared + r_shared)
+
+            prediction = (l_ratio * np.sum(self.weights[low_index : low_index + self.generalization_factor])) + (r_ratio * np.sum(self.weights[high_index : high_index + self.generalization_factor]))
+
+            self.predicted.append(prediction)
+
+        return self.predicted
+
+    def Train(self, epochs = 100, learning_rate = 0.01):
+        self.weights = np.ones(self.num_weights)
+        current_epoch = 0
+
+        prev_err = 0
+        current_err = 0
+        inputs = np.linspace(self.min_input, self.max_input)
+        converged = False
+        while current_epoch <= epochs and not converged:
+            prev_err = current_err
+
+            for i in range(len(self.train_x)):
+                low_index = self.association_map[self.train_x[i]][0]
+                high_index = self.association_map[self.train_x[i]][1]
+
+                l_shared = np.abs(inputs[low_index] - self.train_x[i])
+                r_shared = np.abs(inputs[high_index] - self.train_x[i])
+
+                l_ratio = r_shared / (l_shared + r_shared)
+                r_ratio = l_shared / (l_shared + r_shared)
+
+                output = (l_ratio * np.sum(self.weights[low_index : low_index + self.generalization_factor])) \
+                     + (r_ratio * np.sum(self.weights[high_index : high_index + self.generalization_factor]))
+
+                err = self.train_y[i] - output
+                correction = (learning_rate * err) / self.generalization_factor
+
+                self.weights[low_index : low_index + self.generalization_factor] = \
+                    [(self.weights[idx] + correction) for idx in range(low_index, low_index + self.generalization_factor)]
+                self.weights[high_index : high_index + self.generalization_factor] = \
+                    [(self.weights[idx] + correction) for idx in range(high_index, high_index + self.generalization_factor)]
+
+                predictions = self.Predict(self.test_x)
+                error = mean_squared_error(self.test_y, predictions)
+                val_accuracy=1-error
+
+                # if val_accuracy<0:
+                #     val_accuracy=0
+
+                if np.abs(prev_err - current_err) < 0.000001:
+                    converged = False
+                
+                current_epoch = current_epoch + 1
+        print(f'Continuous CMAC: \n  Generalization Factor: {self.generalization_factor} \n  Epoch: {current_epoch} \n  Accuracy: {val_accuracy * 100}%')
+
 
 
 if __name__=='__main__':
@@ -142,4 +235,11 @@ if __name__=='__main__':
     prediction = dCMAC.Predict(inp)
     dCMAC.plot(inp,prediction)
     
+
+    cCMAC = ContinuousCMAC(x,y,generalization_factor, num_weights, test_size)    
+    cCMAC.Train(1000)
+
+    inp = cCMAC.test_x
+    prediction = cCMAC.Predict(inp)
+    cCMAC.plot(inp,prediction)
 
