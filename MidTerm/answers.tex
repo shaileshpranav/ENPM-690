@@ -1,0 +1,141 @@
+\documentclass[a4paper, 10pt]{article}
+\usepackage[margin=1.5in]{geometry}
+
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{comment}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{booktabs,lipsum}
+
+\graphicspath{ {../outputs/}{../data/} }
+
+
+\setlength{\columnsep}{1cm}
+\title{ENPM 690: Robot Learning}
+\author{Aswath Muthuselvam \\ 118286204 \\aswath@umd.edu}
+\date{10th March 2022}
+
+\begin{document}
+\maketitle
+\newlist{contract}{enumerate}{10}
+\setlist[contract]{label*=\arabic*.}
+\setlistdepth{10} 
+
+\textbf{1. Describe at least 5 differences between Local and Global Learning. Identify 3 methods for both, respectively.}
+
+\textbf{Answer:}
+Local learning occurs with an update of weights corresponding to an input window. Examples of local learning techniques include CMAC, RBF, LWR.  
+Examples of Global Learning include Multilayer perceptrons, Convolution Neural Networks. Some of the key differences between the two is that local learning converges faster, computationally inexpensive as it requires only local update of weights, however the drawback of this feature is that it requires a lot more memory to store than the compressed interconnected representation of Global Learning method like Neural networks. Local learning has very high accuracy as it maps the function very closely. In Global Learning, the model updates all of its weights to learn the function, due to this, there exists unpredictable local minima.
+
+\hfill
+
+\textbf{2. Describe at least 5 differences between Lazy and Eager Learning. Identify 3 methods for both respectively.}
+
+\textbf{Answer:}
+Lazy Learning or Instance based learning methods use parts of the data that is requested as a vector input. Examples include KNN(K-Nearest Neighbors), Locally Weighted Regression, Case-based Reasoning. 
+Eager Learning approximates the global function before receiving a query. It is limited to the global approximation to the target mapping. Examples of Eager Learning includes Multilayer perceptrons, RBFs, Decision Trees, CMAC.
+
+\hfill
+
+\textbf{3. Explain the origins of the CMAC architecture for Machine Learning.}
+
+\textbf{Answer:} 
+
+
+\hfill
+
+\textbf{4. Identify and describe at least 3 key features, 2 advantages, and 2 limitations of CMAC for Machine Learning.}
+
+\textbf{Answer:}
+
+
+\hfill
+
+\textbf{5. Describe a form of Machine Learning discussed in class that uses no weights, generate a pseudo code and explain how it works.}
+
+\textbf{Answer:} The Machine Learning algorithm that requires no weights is KNN(K- Nearest Neighbors).  
+Shepard’s method - Inverse distance weighting
+ - Large K values lead to High bias and low variance, overfitting case.
+ - Small K values lead to Low bias but High variance, underfitting case.
+ The best K value controls a balance between over-fitting and under-fitting.
+
+Pseudo code of KNN:
+\begin{algorithm}
+
+	\caption{$K$ Nearest Neighbor}
+	\begin{algorithmic}[1]
+		\Function{ComputeDistance}{a,b}
+			\State d = $\sqrt{(a-b)^{2}}$
+			\State \Return d
+		\EndFunction
+		
+		\State C = Dictionary of classes
+		\For{t = 1 to T} 
+			\State $\{x|x \in X\}$ \Comment{Choose a point $x$ from $X$}
+			\State D=EmptyList
+			\For{$x_{i}$ in $X$}
+				\State d=ComputeDistance($x$,$x_{i}$)
+				\State Store d in D
+			\EndFor
+			\State L = Sort(D)
+			\State N = getFirstKPoints(L,$K$)
+			\State C[x] = N 
+			
+		\EndFor
+	\end{algorithmic}
+\end{algorithm}
+
+
+Explanation:
+
+\hfill
+
+\textbf{6. Identify and explain differences between Forward and Inverse models in robot control systems.}
+
+\textbf{Answer:} Control of a robot can be done in two ways. For example, let's take the case of a robotic arm with many joints. The forward control method involves commanding the individual joint velocities to move the end effector to a desired location. 
+However, in the case of Inverse control method, the desired end effector movement is commanded to the robot, subsequently, the individual joint rotations are calculated. With the inverse Jacobian method, the movement of the joints may not be deterministic, each joint will move in a direction that has the least cost of motion. 
+
+\hfill
+
+\textbf{7. What was demonstrated by Braitenberg with his Vehicles, and explain why this was significant in 3 different  perspectives.}
+
+\textbf{Answer:} 
+
+\hfill
+
+\textbf{8. Identify 3 additional influential pioneers in the development of Behavior-Based Robotics discussed in class, and explain how their approaches and methodologies differed.}
+
+\textbf{Answer:} 
+Active perception is more towards the act of perceiving than acting on it. With that said, however, we can leverage this idea and act with the motor system based on the perception inference. During 1994, Wilkes and Tsotsos at University of Toronto controls a video camera on and defines three behaviors for controlling it. "Image line centering," orient object vertically using rotation control. "Image line following," centering of camera as the object is moved parallel to image plane, using tangential control.And "Camera distance correction," providing translation movement of object along the camera's optical axis, using translation control. These behaviors gives the ability for the camera to move in space and aids in exploration and confirms any priors of it's environment. 
+
+Answer for this question is referred from \cite{arkin}, Chapter 7.
+
+
+\hfill
+
+\textbf{9. Give 5 concrete examples on how evolutionary computation can be used to develop useful robot behaviors.}
+
+\textbf{Answer:} Evolutionary computations are combination/mutations based algorithms. A set of parameters are evaluated in each scene, the performance is measured. Genetic Algorithm, Genetic program, Evolutionary strategies, Evolutionary program, Learning classifier program 
+
+\hfill 
+
+\textbf{10. Describe in detail the use of shaping for creating a behavior-based robot controller.}
+
+\textbf{Answer:} Shaping can be used to help the robot learn new behaviors. The types of behaviors that can be shaped are: Topography - the form of behavior, Frequency, Latency - how long after the stimulus is the behavior observed , Duration of how long the behavior lasts, and Amplitude. Shaping also makes the robot combine with other procedures such as chaining, imitation etc. 
+
+\begin{thebibliography}{9}
+	\bibitem{arkin}
+Arkin, Ronald C., and Ronald C. Arkin. Behavior-based robotics. MIT press, 1998.
+\end{thebibliography}
+
+
+\end{document}
+
