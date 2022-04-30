@@ -19,7 +19,7 @@ $ tree -L 2
 ├── scenes
 │   ├── sample_chopped_100
 │   ├── sample.zarr
-│   ├── train
+│   ├── validate_0.zarr
 │   └── train.zarr
 └── semantic_map
     ├── feedback.txt
@@ -53,6 +53,7 @@ run code/reinforcement_learning/gym_environment_play_and_learn.ipynb
 ```
 
 # Outputs
+- Simulation output: ![Image](https://user-images.githubusercontent.com/7314342/166117851-9c53231b-29eb-42e5-855a-ad1207c8c49b.gif)
 - Youtube video of simualtion output is available in this [link](https://youtu.be/fpV1gaZ-MUo).
 - Presentation slides can be viewed [here](https://docs.google.com/presentation/d/116xFGsb_S7knmKC9q_JUTmFY5BpfA18oL2fppOOVqqc/edit?usp=sharing).
 
