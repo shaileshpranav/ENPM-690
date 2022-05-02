@@ -1,5 +1,5 @@
 # Self Driving Vehicle Navigating A Dynamic Environment
-- Team Members: Aswath Muthuselvam(118286204), Shailesh Pranav Rajendran(11828)
+- Team Members: Aswath Muthuselvam(118286204), Shailesh Pranav Rajendran(118261997)
 - Date: 04/29/2022
 - Course: ENPM690 - Robot Learning
 
@@ -58,4 +58,4 @@ run code/reinforcement_learning/gym_environment_play_and_learn.ipynb
 - Presentation slides can be viewed [here](https://docs.google.com/presentation/d/116xFGsb_S7knmKC9q_JUTmFY5BpfA18oL2fppOOVqqc/edit?usp=sharing).
 
 # Credits:
-1. We used the implementation of Transfromer from [jeonsworld](https://github.com/jeonsworld/ViT-pytorch). 
+1. Implementation of Transfromer used from [jeonsworld](https://github.com/jeonsworld/ViT-pytorch). 
